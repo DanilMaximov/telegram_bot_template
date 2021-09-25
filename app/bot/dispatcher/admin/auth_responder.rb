@@ -27,42 +27,38 @@ module Dispatcher
     end
 
     # Buttons
-    def button_accept
+    def button_auth 
+      access = case @callback_data[:text]
+      when ACCEPT then true
+      when DENY then false
+      end 
+
+      access_string = access ? 'accepted' : 'denied'
+
       user_id = @callback_data[:user_id].to_i
 
       client_user = ::User.find(telegram_id: user_id)
 
       client_user.update(access: true)
 
-      send_message(chat_id: user_id, text: ::I18n.t(:'user.service.user_accepted'))
+      send_message(chat_id: user_id, text: I18n.t(:"user.service.user_#{access_string}"))
 
       edit_message(
         chat_id: user.telegram_id,
-        text: I18n.t(:'admin.user_accepted', name: client.user_link(user_id, client_user.name)),
+        text: I18n.t(:"admin.user_#{access_string}", name: client.user_link(user_id, client_user.name)),
         message_id: @callback_data[:message_id]
       )
 
-      force_message(user_id: user_id, step: 'start')
+      force_message(user_id: user_id, step: 'start') if access
     end
 
-    def button_deny
-      user_id = @callback_data[:user_id].to_i
-
-      client_user = ::User.find(id: user_id)
-
-      client_user.update(access: true)
-
-      send_message(chat_id: user_id, text: I18n.t(:'user.service.user_denied'))
-
-      edit_message(
-        chat_id: user.telegram_id,
-        text: I18n.t(:'admin.user_denied', name: client.user_link(user_id, client_user.name)),
-        message_id: @callback_data[:message_id]
-      )
-    end
-
+    # Service
     def text_respond
       send(:auth)
+    end
+
+    def button_respond
+      send(:button_auth)
     end
   end
 end

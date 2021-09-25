@@ -14,18 +14,6 @@ class TelegramBot < ApplicationBot
     Dispatcher::SuperBase.dispatch(user, message: user_message, client: self)
   end
 
-  def find_user
-    User.find(telegram_id: message.from.id.to_i)
-  end
-
-  def create_user
-    user = User.create(**user_params)
-
-    Dispatcher::Admin::AuthResponder.call(user, client: self, message: text_object, skip_validation: true)
-
-    user
-  end
-
   def send_message(text:, chat_id:, options:)
     markup = generate_inline_buttons(options[:buttons], message_id: message.message_id) if options.key?(:buttons)
 
@@ -49,5 +37,16 @@ class TelegramBot < ApplicationBot
 
   def text_object
     { type: TEXT, content: message.text }
+  end
+
+
+  def find_user
+    User.find(telegram_id: message.from.id.to_i)
+  end
+
+  def create_user
+    user = User.create(**user_params)
+    Dispatcher::Admin::AuthResponder.call(user, client: self, message: text_object, skip_validation: true)
+    user
   end
 end

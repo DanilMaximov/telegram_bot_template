@@ -8,7 +8,6 @@ module Dispatcher
     option :message, optional: true
     option :client
     option :force_step, optional: true
-    option :skip_validation, Types::Bool, default: -> { false }
 
     def self.dispatch(*args, **options)
       new(*args, **options).dispatch

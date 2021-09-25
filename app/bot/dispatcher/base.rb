@@ -2,6 +2,8 @@
 
 module Dispatcher
   class Base < SuperBase
+    option :skip_validation, Types::Bool, default: -> { false }
+
     include Responding
     include Validating
 
@@ -13,7 +15,10 @@ module Dispatcher
       return unless validate! || skip_validation
 
       case message[:type]
-      when ::ApplicationBot::BUTTON then button_respond
+      when ::ApplicationBot::BUTTON 
+        @callback_data = message[:content]
+
+        button_respond
       when ::ApplicationBot::TEXT then text_respond
       end
     end
@@ -25,8 +30,6 @@ module Dispatcher
     end
 
     def button_respond
-      @callback_data = message[:content]
-
       send("button_#{message[:content][:text].downcase}")
     end
   end
