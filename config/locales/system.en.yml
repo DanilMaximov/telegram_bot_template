@@ -1,0 +1,13 @@
+en:
+  system: 
+    responders:
+      admin: 
+        steps: 
+          auth: 
+            start: 'start'
+      user:
+        steps: 
+          base:
+            start: 'start'
+       
+  

@@ -1,0 +1,12 @@
+en:
+  user:
+    start: "Hey <b>%{name}</b>, How are you?"
+    access_requested: "Access to bot was requested from administrator. Please wait :)"
+    service: 
+      not_avalaible: "In working progress..."
+      user_accepted: 'Access was <b>accepted</b>. Moving to main menu...'
+      user_denied: "Access was <b>denied</b>...\n\nI'm sorry, my creator is peace of shit..."
+  admin: 
+    new_user: "User: %{name} wants to join bot\n\n"
+    user_accepted: "Access to %{name} was <b>ACCEPTED</b>"
+    user_denied: "Access to %{name} was <b>DENIED</b>"

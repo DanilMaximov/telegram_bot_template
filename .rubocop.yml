@@ -1,0 +1,36 @@
+inherit_gem:
+  standard: config/base.yml
+
+require:
+  - standard/cop/block_single_line_braces
+
+AllCops:
+  TargetRubyVersion: 3.0.0
+  SuggestExtensions: false
+
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+
+Style/StringLiteralsInInterpolation:
+  EnforcedStyle: single_quotes
+
+Layout/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: space
+
+Performance/RedundantMerge:
+  Enabled: false
+
+Style/SafeNavigation:
+  Enabled: false
+
+Naming/VariableName:
+  Enabled: false
+
+Layout/SpaceInLambdaLiteral:
+  EnforcedStyle: require_space
+
+Style/OptionalArguments:
+  Enabled: false
+
+Style/Documentation: 
+  Enabled: false

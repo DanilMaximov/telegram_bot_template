@@ -1,0 +1,9 @@
+ru:
+  user:
+    start: "Привет <b>%{name}</b>, Как дела?"
+  admin: 
+    new_user: "Пользователь: %{name} хочет присоедениться к боту\n\n"
+    user_accepted: "Доступ для %{name} <b>РАЗРЕШЕН</b>"
+    user_denied: "Доступ для %{name} <b>ОГРАНИЧЕН</b>"
+
+    
