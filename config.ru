@@ -5,7 +5,7 @@ require_relative 'config/application'
 Application.initialize!
 
 if ARGV.include? 'console'
-  binding.pry
+  Pry.start
   return
 end
 
