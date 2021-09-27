@@ -22,7 +22,7 @@ module Dispatcher
     def force_message(step:, user_id: user.telegram_id, responder: 'user')
       responder_class(responder, step).call(
         ::User.find(telegram_id: user_id),
-        message: { type: :text, content: step },
+        message: client.text_object(content: step),
         client: client,
         force_step: step
       )
