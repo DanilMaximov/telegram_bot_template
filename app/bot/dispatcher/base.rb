@@ -15,11 +15,11 @@ module Dispatcher
       return unless validate! || skip_validation
 
       case message[:type]
-      when ::ApplicationBot::BUTTON 
+      when :button
         @callback_data = message[:content]
 
         button_respond
-      when ::ApplicationBot::TEXT then text_respond
+      when :text then text_respond
       end
     end
 

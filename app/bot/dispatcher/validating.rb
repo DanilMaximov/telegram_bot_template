@@ -13,10 +13,10 @@ module Dispatcher
     end
 
     def start_message?
-      if message[:type] == ::ApplicationBot::TEXT && message[:content] == ::ApplicationBot::COMMAND_START
+      if message[:type] == :text && message[:content] == client.invocation_command
         user.start!
 
-        force_message(step: ::ApplicationBot::START)
+        force_message(step: client.initial_step)
 
         true
       end

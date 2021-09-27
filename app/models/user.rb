@@ -3,7 +3,6 @@
 require 'aasm'
 
 class User < Sequel::Model(DB)
-  unrestrict_primary_key
   plugin :timestamps, update_on_create: true
 
   include AASM
@@ -33,8 +32,17 @@ class User < Sequel::Model(DB)
       transitions to: :start
     end
   end
+  class << self 
+    def admin
+      STATE_ADMIN.to_s
+    end
+
+    def user
+      STATE_USER.to_s
+    end
+  end
 
   def admin?
-    role == ::ApplicationBot::ADMIN
+    role == self.class.admin
   end
 end

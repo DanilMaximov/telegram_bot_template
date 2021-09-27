@@ -9,19 +9,6 @@ class ApplicationBot
   option :message, optional: true
   option :parse_mode, default: -> { 'HTML' }
 
-
-  BUTTON = 'button'
-  TEXT = 'text'
-  COMMAND = 'command'
-
-  USER = 'user'
-  ADMIN = 'admin'
-  MODERATOR = 'moderator'
-
-  COMMAND_START = '/start'
-
-  START = 'start'
-
   def call(**)
     raise NotImplementedError, '#call is not implemented'
   end
@@ -36,5 +23,13 @@ class ApplicationBot
 
   def edit_message(**)
     raise NotImplementedError, '#edit_message! is not implemented'
+  end
+
+  def initial_step
+    'start'
+  end
+
+  def invocation_command
+    '/start'
   end
 end

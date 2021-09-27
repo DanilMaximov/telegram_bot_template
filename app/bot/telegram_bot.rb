@@ -32,11 +32,11 @@ class TelegramBot < ApplicationBot
   private
 
   def button_object
-    { type: BUTTON, content: JSON.parse(message.data).symbolize_keys }
+    { type: :button, content: JSON.parse(message.data).symbolize_keys }
   end
 
   def text_object
-    { type: TEXT, content: message.text }
+    { type: :text, content: message.text }
   end
 
 

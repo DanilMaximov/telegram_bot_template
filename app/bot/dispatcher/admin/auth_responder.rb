@@ -10,7 +10,7 @@ module Dispatcher
     def auth
       text = I18n.t(:'admin.new_user', name: client.user_link(client.user_params[:telegram_id], client.user_params[:name]))
 
-      admin_id = ::User.find(role: ::ApplicationBot::ADMIN)&.telegram_id || ENV['ADMIN_ID']
+      admin_id = ::User.find(role: ::User.admin)&.telegram_id || ENV['ADMIN_ID']
 
       send_message(
         text: text,
