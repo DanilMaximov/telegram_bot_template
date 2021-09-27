@@ -29,6 +29,14 @@ class TelegramBot < ApplicationBot
     nil
   end
 
+  def initial_step
+    'start'
+  end
+
+  def invocation_command
+    '/start'
+  end
+
   private
 
   def button_object(content: nil)

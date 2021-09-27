@@ -26,10 +26,10 @@ class ApplicationBot
   end
 
   def initial_step
-    'start'
+    raise NotImplementedError, '#initial_step! is not implemented'
   end
 
   def invocation_command
-    '/start'
+    raise NotImplementedError, '#invocation_command! is not implemented'
   end
 end
