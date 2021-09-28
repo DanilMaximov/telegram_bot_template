@@ -7,7 +7,6 @@ class ApplicationBot
 
   option :bot, optional: true
   option :message, optional: true
-  option :parse_mode, default: -> { 'HTML' }
 
   def call(**)
     raise NotImplementedError, '#call is not implemented'

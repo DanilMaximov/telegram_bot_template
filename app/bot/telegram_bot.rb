@@ -2,6 +2,7 @@
 
 class TelegramBot < ApplicationBot
   include TelegramBotHelper
+  option :parse_mode, default: -> { 'HTML' }
 
   def call
     user = find_user || create_user
