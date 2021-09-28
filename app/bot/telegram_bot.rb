@@ -38,8 +38,6 @@ class TelegramBot < ApplicationBot
     '/start'
   end
 
-  private
-
   def button_object(content: nil)
     content ||= JSON.parse(message.data).symbolize_keys
 
@@ -52,6 +50,7 @@ class TelegramBot < ApplicationBot
     { type: :text, content: content }
   end
 
+  private
 
   def find_user
     User.find(telegram_id: message.from.id.to_i)
