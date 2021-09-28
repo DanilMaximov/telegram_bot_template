@@ -16,10 +16,9 @@ module Dispatcher
         text: text,
         chat_id: admin_id,
         options: {
-          buttons: [
-            { text: ACCEPT, user_id: client.user_params[:telegram_id] },
-            { text: DENY, user_id: client.user_params[:telegram_id] }
-          ]
+          buttons: AUTH_BUTTONS.each_with_index.map do |text, i|            
+            { text: text, tid: i, uid: client.user_params[:telegram_id], step: :auth }
+          end
         }
       )
 
@@ -28,17 +27,10 @@ module Dispatcher
 
     # Buttons
     def button_auth 
-      access = case @callback_data[:text]
-      when ACCEPT then true
-      when DENY then false
-      end 
+      access_string = access_given? ? 'accepted' : 'denied'
 
-      access_string = access ? 'accepted' : 'denied'
-
-      user_id = @callback_data[:user_id].to_i
-
+      user_id = message[:content][:uid].to_i
       client_user = ::User.find(telegram_id: user_id)
-
       client_user.update(access: true)
 
       send_message(chat_id: user_id, text: I18n.t(:"user.service.user_#{access_string}"))
@@ -46,10 +38,10 @@ module Dispatcher
       edit_message(
         chat_id: user.telegram_id,
         text: I18n.t(:"admin.user_#{access_string}", name: client.user_link(user_id, client_user.name)),
-        message_id: @callback_data[:message_id]
+        message_id: client.message.message.message_id - 1
       )
 
-      force_message(user_id: user_id, step: 'start') if access
+      force_message(user_id: user_id, step: 'start') if access_given?
     end
 
     # Service
@@ -59,6 +51,15 @@ module Dispatcher
 
     def button_respond
       send(:button_auth)
+    end
+
+    private
+
+    def access_given?
+      case AUTH_BUTTONS[message[:content][:tid]]
+      when ACCEPT then true
+      when DENY then false
+      end 
     end
   end
 end

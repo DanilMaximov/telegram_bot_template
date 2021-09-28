@@ -1,23 +1,17 @@
 # frozen_string_literal: true
 
 module TelegramBotHelper
+  CALLBACK_DATA_SIZE_LIMIT = 64 
+
   def generate_inline_buttons(buttons, message_id:, split_by: 1)
     kb = buttons.map do |button|
       ::Telegram::Bot::Types::InlineKeyboardButton.new(
         text: button[:text],
-        callback_data: button_serializer(button, message_id)
+        callback_data: button_data(button, message_id)
       )
     end.each_slice(split_by)
 
     ::Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: kb)
-  end
-
-  def button_serializer(button, message_id)
-    {
-      message_id: message_id,
-      text: button[:text],
-      **button.except(:text)
-    }.to_json
   end
 
   def user_params
@@ -30,5 +24,15 @@ module TelegramBotHelper
 
   def user_link(id, name)
     "<a href=\"tg://user?id=#{id}\">#{name}</a>"
+  end
+
+  private
+
+  def button_data(button, message_id)
+    data = button.except(:text).to_json
+
+    raise "callback_data size must be less than 64 bytes, current size: #{data.bytesize}" if data.bytesize > CALLBACK_DATA_SIZE_LIMIT
+    
+    data
   end
 end
