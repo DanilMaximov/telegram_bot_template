@@ -38,6 +38,7 @@ gem 'parse-cron', '~> 0.1.4' # Parse cron entries
 gem 'sentry-ruby'
 gem 'http'
 gem 'zeitwerk'
+gem 'standard', '~> 1.0', require: false
 
 # sidekiq
 gem 'async'
@@ -52,7 +53,6 @@ group :development, :test do
 
   gem 'guard'
   gem 'guard-rspec', '4.7.3'
-  gem 'guard-rubocop'
 end
 
 group :test do
@@ -71,11 +71,4 @@ group :test do
 
   # utilities
   gem 'private_address_check', require: false
-end
-
-group :development do
-  # linting
-  gem 'rubocop', '~> 0.89', require: false
-  gem 'rubocop-performance', require: false
-  gem 'rubocop-rspec', require: false
 end

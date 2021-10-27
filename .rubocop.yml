@@ -2,10 +2,16 @@ inherit_gem:
   standard: config/base.yml
 
 require:
-  - standard/cop/block_single_line_braces
+  - rubocop-performance
 
 AllCops:
-  TargetRubyVersion: 3.0.0
+  TargetRubyVersion: 3.0.2
+  Exclude:
+    - db/**/*
+    - bin/**/*
+    - vendor/**/* # for CI
+    - tmp/*
+    - public/**/*
   SuggestExtensions: false
 
 Style/StringLiterals:
@@ -23,14 +29,8 @@ Performance/RedundantMerge:
 Style/SafeNavigation:
   Enabled: false
 
-Naming/VariableName:
-  Enabled: false
-
 Layout/SpaceInLambdaLiteral:
   EnforcedStyle: require_space
 
 Style/OptionalArguments:
-  Enabled: false
-
-Style/Documentation: 
   Enabled: false
