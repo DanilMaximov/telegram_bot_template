@@ -26,7 +26,7 @@ module Dispatcher
     end
 
     # Buttons
-    def button_auth 
+    def button_auth
       access_string = access_given? ? 'accepted' : 'denied'
 
       user_id = message[:content][:uid].to_i
@@ -41,16 +41,7 @@ module Dispatcher
         message_id: client.message.message.message_id - 1
       )
 
-      force_message(user_id: user_id, step: 'start') if access_given?
-    end
-
-    # Service
-    def text_respond
-      send(:auth)
-    end
-
-    def button_respond
-      send(:button_auth)
+      send_message(chat_id: user_id, text: I18n.t(:'user.start', name: user.name)) if access_given?
     end
 
     private

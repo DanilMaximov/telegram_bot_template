@@ -1,35 +1,54 @@
 # frozen_string_literal: true
 
 module Dispatcher
+  class NotAuthenticatedUser < StandardError; end
+
   class SuperBase
     extend Dry::Initializer
 
+    include Responding
+    include Constants
     param :user, Types::Instance(::User)
+
     option :message
     option :client
-    option :force_step, optional: true
 
     def self.dispatch(*args, **options)
       new(*args, **options).dispatch
     end
 
     def dispatch
+      authorize_user!
+      authenticate_user!
+
       responder_class.call(
-        user,
+        @user,
         message: message,
         client: client
       )
+    # TODO: Remove this hack for preventing responder_class call
+    rescue NotAuthenticatedUser
+      User::NotAuthenticatedResponder.call(@user, client: client, message: { method: 'request_access' })
     end
 
-    protected
+    private
 
-    def responder_class(role = user.role, step = nil)
-      step ||= message[:content][:step] || user.step
+    def authorize_user!
+      @user = ::User.find(telegram_id: client.message.from.id.to_i)
 
-      namespace = Object.const_get "Dispatcher::#{role.capitalize}"
+      return if @user
 
-      responders = namespace.constants.filter { |responder| responder.to_s.include? 'Responder' }
-      
+      @user = ::User.create(**client.user_params)
+      Dispatcher::Admin::AuthResponder.call(@user, client: client, message: { method: 'auth' })
+    end
+
+    def authenticate_user!
+      return if @user.access || @user.admin?
+
+      raise NotAuthenticatedUser
+    end
+
+    def responder_class
       klass = responders.find do |const|
         responder = Object.const_get"#{namespace}::#{const}"
         responder.instance_methods.include? step.to_sym

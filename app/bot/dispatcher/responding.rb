@@ -19,21 +19,12 @@ module Dispatcher
       )
     end
 
-    def force_message(step:, user_id: user.telegram_id, responder: 'user')
-      responder_class(responder, step).call(
-        ::User.find(telegram_id: user_id),
-        message: client.text_object(content: step),
-        client: client,
-        force_step: step
-      )
-    end
-
-    def method_missing(method_name)
-      send_message(
-        chat_id: user.id,
-        text: "undefined step #{method_name}. You'r going to be moved to start menu"
-      )
-      user.start!
-    end
+    # def method_missing(method_name)
+    #   send_message(
+    #     chat_id: user.telegram_id,
+    #     text: "undefined step #{method_name}. You'r going to be moved to start menu"
+    #   )
+    #   user.start!
+    # end
   end
 end
