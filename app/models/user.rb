@@ -32,7 +32,7 @@ class User < Sequel::Model(DB)
       transitions to: :start
     end
   end
-  class << self 
+  class << self
     def admin
       STATE_ADMIN.to_s
     end
@@ -40,9 +40,5 @@ class User < Sequel::Model(DB)
     def user
       STATE_USER.to_s
     end
-  end
-
-  def admin?
-    role == self.class.admin
   end
 end

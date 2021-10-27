@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module TelegramBotHelper
-  CALLBACK_DATA_SIZE_LIMIT = 64 
+  CALLBACK_DATA_SIZE_LIMIT = 64
 
   def generate_inline_buttons(buttons, message_id:, split_by: 1)
     kb = buttons.map do |button|
@@ -31,8 +31,8 @@ module TelegramBotHelper
   def button_data(button, message_id)
     data = button.except(:text).to_json
 
-    raise "callback_data size must be less than 64 bytes, current size: #{data.bytesize}" if data.bytesize > CALLBACK_DATA_SIZE_LIMIT
-    
+    raise "callback_data size must be less than 64 bytes, current size: #{data.bytesize}, data: #{data.to_json}" if data.bytesize > CALLBACK_DATA_SIZE_LIMIT
+
     data
   end
 end

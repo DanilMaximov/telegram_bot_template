@@ -2,7 +2,7 @@
 
 require 'sequel'
 
-db_config_file = File.join(File.dirname(__FILE__), "../database.yml")
+db_config_file = File.join(File.dirname(__FILE__), '../database.yml')
 
 config = YAML.safe_load(File.read(db_config_file))[Application.env]
 
