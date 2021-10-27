@@ -8,7 +8,7 @@ module Dispatcher
 
     include Responding
     include Constants
-    param :user, Types::Instance(::User)
+    include Concerns::ResponderRouter
 
     option :message
     option :client
@@ -49,12 +49,17 @@ module Dispatcher
     end
 
     def responder_class
-      klass = responders.find do |const|
-        responder = Object.const_get"#{namespace}::#{const}"
-        responder.instance_methods.include? step.to_sym
+      message[:type] = :command if message[:content][:text].to_s.match? COMMAND_FORMAT
+
+      klass, method = case message[:type]
+      when :text then text_routing
+      when :command then command_routing
+      when :button then button_routing
       end
 
-      Object.const_get "#{namespace}::#{klass || 'BaseResponder'}"
+      message[:method] ||= "#{message[:type]}_#{method || klass.downcase}"
+
+      Object.const_get "#{namespace}::#{klass || 'Base'}Responder"
     end
   end
 end

@@ -2,10 +2,6 @@
 
 module Dispatcher
   class Admin::AuthResponder < Base
-    AUTH_BUTTONS = [
-      ACCEPT = 'Accept',
-      DENY = 'Deny'
-    ].freeze
 
     def auth
       text = I18n.t(:'admin.new_user', name: client.user_link(client.user_params[:telegram_id], client.user_params[:name]))
@@ -16,13 +12,11 @@ module Dispatcher
         text: text,
         chat_id: admin_id,
         options: {
-          buttons: AUTH_BUTTONS.each_with_index.map do |text, i|            
-            { text: text, tid: i, uid: client.user_params[:telegram_id], step: :auth }
+          buttons: [ACCEPT, DENY].map do |text|
+            { text: text, tid: BUTTONS.index(text), uid: client.user_params[:telegram_id] }
           end
         }
       )
-
-      send_message(text: I18n.t(:'user.access_requested'), chat_id: client.user_params[:telegram_id])
     end
 
     # Buttons
@@ -47,10 +41,10 @@ module Dispatcher
     private
 
     def access_given?
-      case AUTH_BUTTONS[message[:content][:tid]]
+      case BUTTONS[message[:content][:tid]]
       when ACCEPT then true
       when DENY then false
-      end 
+      end
     end
   end
 end
