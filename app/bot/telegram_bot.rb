@@ -1,8 +1,15 @@
 # frozen_string_literal: true
 
-class TelegramBot < ApplicationBot
-  include TelegramBotHelper
+require 'dry-initializer'
+
+class TelegramBot
+  extend Dry::Initializer
+
   option :parse_mode, default: -> { 'HTML' }
+  option :bot, optional: true
+  option :message, optional: true
+
+  include TelegramBotHelper
 
   def call
     user_message = case message
@@ -22,10 +29,13 @@ class TelegramBot < ApplicationBot
   def edit_message(text:, message_id:, chat_id:, options:)
     markup = generate_inline_buttons(options[:buttons], message_id: message_id, split_by: 4) if options.key?(:buttons)
 
-    bot.api.edit_message_text(chat_id: chat_id, text: text, message_id: message_id + 1, reply_markup: markup,
-                              parse_mode: parse_mode)
-  rescue
-    nil
+    bot.api.edit_message_text(
+      chat_id: chat_id,
+      text: text,
+      message_id: message_id,
+      reply_markup: markup,
+      parse_mode: parse_mode
+    )
   end
 
   def initial_step
@@ -34,6 +44,22 @@ class TelegramBot < ApplicationBot
 
   def invocation_command
     '/start'
+  end
+
+  def user_params
+    {
+      id: message.from.id.to_i,
+      username: message.from.username,
+      name: message.from.first_name
+    }
+  end
+
+  def button_message_id
+    message.message.message_id
+  end
+
+  def user_link(id, name)
+    "<a href=\"tg://user?id=#{id}\">#{name}</a>"
   end
 
   private

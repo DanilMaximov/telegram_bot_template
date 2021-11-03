@@ -34,11 +34,14 @@ module Dispatcher
     private
 
     def authorize_user!
-      @user = ::User.find(telegram_id: client.message.from.id.to_i)
+      @user = ::User.find(telegram_id: client.user_params[:id])
 
       return if @user
 
-      @user = ::User.create(**client.user_params)
+      @user = ::User.create(
+        telegram_id: client.user_params[:id],
+        **client.user_params.slice(:username, :name)
+      )
       Dispatcher::Admin::AuthResponder.call(@user, client: client, message: { method: 'auth' })
     end
 

@@ -14,18 +14,6 @@ module TelegramBotHelper
     ::Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: kb)
   end
 
-  def user_params
-    {
-      telegram_id: message.from.id.to_i,
-      username: message.from.username,
-      name: message.from.first_name
-    }
-  end
-
-  def user_link(id, name)
-    "<a href=\"tg://user?id=#{id}\">#{name}</a>"
-  end
-
   private
 
   def button_data(button, message_id)

@@ -2,10 +2,8 @@
 
 module Dispatcher
   class Admin::AuthResponder < Base
-
     def auth
-      text = I18n.t(:'admin.new_user', name: client.user_link(client.user_params[:telegram_id], client.user_params[:name]))
-
+      text = I18n.t(:'admin.new_user', name: client.user_link(user.telegram_id, user.name))
       admin_id = ::User.find(role: ::User.admin)&.telegram_id || ENV['ADMIN_ID']
 
       send_message(
@@ -13,7 +11,7 @@ module Dispatcher
         chat_id: admin_id,
         options: {
           buttons: [ACCEPT, DENY].map do |text|
-            { text: text, tid: BUTTONS.index(text), uid: client.user_params[:telegram_id] }
+            { text: text, tid: BUTTONS.index(text), uid: user.telegram_id }
           end
         }
       )
@@ -32,7 +30,7 @@ module Dispatcher
       edit_message(
         chat_id: user.telegram_id,
         text: I18n.t(:"admin.user_#{access_string}", name: client.user_link(user_id, client_user.name)),
-        message_id: client.message.message.message_id - 1
+        message_id: client.button_message_id
       )
 
       send_message(chat_id: user_id, text: I18n.t(:'user.start', name: user.name)) if access_given?
