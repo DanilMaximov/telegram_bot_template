@@ -13,8 +13,10 @@ class TelegramBot
 
   def call
     user_message = case message
-      when Telegram::Bot::Types::CallbackQuery then button_object
-      when Telegram::Bot::Types::Message then text_object
+      when Telegram::Bot::Types::CallbackQuery
+        { type: :button, content: JSON.parse(message.data).symbolize_keys }
+      when Telegram::Bot::Types::Message
+        { type: :text, content: { text: message.text } }
     end
 
     Dispatcher::SuperBase.dispatch(message: user_message, client: self)
@@ -38,13 +40,11 @@ class TelegramBot
     )
   end
 
-  def initial_step
-    'start'
-  end
+  def initial_step = 'start'
 
-  def invocation_command
-    '/start'
-  end
+  def invocation_command = '/start'
+
+  def user_link(id, name) = "<a href=\"tg://user?id=#{id}\">#{name}</a>"
 
   def user_params
     {
@@ -56,19 +56,5 @@ class TelegramBot
 
   def button_message_id
     message.message.message_id
-  end
-
-  def user_link(id, name)
-    "<a href=\"tg://user?id=#{id}\">#{name}</a>"
-  end
-
-  private
-
-  def button_object
-    { type: :button, content: JSON.parse(message.data).symbolize_keys }
-  end
-
-  def text_object
-    { type: :text, content: { text: message.text } }
   end
 end

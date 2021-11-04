@@ -21,7 +21,7 @@ module Dispatcher
 
       responder = Object.const_get(namespace).constants.filter { _1.to_s.include? 'Responder' }
         .find { Object.const_get("#{namespace}::#{_1}").instance_methods.include?(step.to_sym) }
-      &.chomp('Responder')
+        &.chomp('Responder')
 
       [responder, step]
     end
